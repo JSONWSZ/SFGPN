@@ -35,9 +35,7 @@ Performance comparison on the SYSU-MM01 dataset:
 ## 4. Prerequisites
 
 ### Environment
-
 Please refer to `SFGPN/requirements.txt` for the specific dependency versions.
-
 ```bash
 pip install -r SFGPN/requirements.txt
 ```
@@ -46,109 +44,90 @@ pip install -r SFGPN/requirements.txt
 
 You need to download the original datasets and then perform the instance segmentation preprocessing.
 
-1. **Original Datasets Download:**
+1.  **Original Datasets Download:**
+    -   **RegDB [1]:** Download from [here](http://dm.dongguk.edu/link.html).
+    -   **SYSU-MM01 [2]:** Download from [here](http://isee.sysu.edu.cn/project/RGBIRReID.htm).
+    -   **LLCM [3]:** Download by sending a signed [agreement](https://github.com/ZYK100/LLCM/blob/main/Agreement/LLCM%20DATASET%20RELEASE%20AGREEMENT.pdf) to `zhangyk@stu.xmu.edu.cn`.
 
-   - **RegDB [1]:** Download from [here](http://dm.dongguk.edu/link.html).
-   - **SYSU-MM01 [2]:** Download from [here](http://isee.sysu.edu.cn/project/RGBIRReID.htm).
-   - **LLCM [3]:** Download by sending a signed [agreement](https://github.com/ZYK100/LLCM/blob/main/Agreement/LLCM%20DATASET%20RELEASE%20AGREEMENT.pdf) to `zhangyk@stu.xmu.edu.cn`.
+2.  **Instance Segmentation Processing:**
+    To obtain the mask annotations, we use the **YOLO11** instance segmentation model.
+    -   **Logic:** Refer to `SFGPN/PedestrianSegmentation/Segmentation.py`.
+    -   **Model:** Get the YOLO11 model from [Ultralytics](https://docs.ultralytics.com/zh/tasks/segment/).
+    
+    > **Note on Dirty Data:** The original datasets contain "dirty" images (background only, no pedestrians). For example, in SYSU-MM01, we set a confidence threshold of 0.1. Images below this threshold are saved to `SYSU-MM01-dirty` (e.g., subfolders like `cam1`, `cam5/0461` often contain empty backgrounds). We filter these out during preprocessing.
 
-- **Instance Segmentation Processing:**
-  To obtain the mask annotations, we use the **YOLO11** instance segmentation model.
-
-  - **Logic:** Refer to `SFGPN/PedestrianSegmentation/Segmentation.py`.
-  - **Model:** Get the YOLO11 model from [Ultralytics](https://docs.ultralytics.com/zh/tasks/segment/).
-
-  > **Note on Dirty Data:** The original datasets contain "dirty" images (background only, no pedestrians). For example, in SYSU-MM01, we set a confidence threshold of 0.1. Images below this threshold are saved to `SYSU-MM01-dirty` (e.g., subfolders like `cam1`, `cam5/0461` often contain empty backgrounds). We filter these out during preprocessing.
-
-- **Quick Start (Pre-processed Data):**
-  If you prefer not to process the data manually, you can download our **processed datasets ** directly from [Baidu Netdisk](https://pan.baidu.com/s/1Pw22313pqSaBGebggMH-uQ?pwd=1234).
+3.  **Quick Start (Pre-processed Data):**
+    If you prefer not to process the data manually, you can download our **processed datasets** directly from [Baidu Netdisk](https://pan.baidu.com/s/1Pw22313pqSaBGebggMH-uQ?pwd=1234).
 
 ## 5. Training
 
 ### SYSU-MM01
-
 First, run `pre_process_sysu_mask.py` to generate the `SYSU-MM01-npy` folder.
-
 ```bash
 python train.py --dataset sysu --gpu 0 --workers 4
 ```
 
 ### LLCM
-
 ```bash
 python train.py --dataset llcm --gpu 0 --workers 4
 ```
 
 ### RegDB
-
 ```bash
 python train.py --dataset regdb --gpu 0 --workers 4 --trial 1
 ```
 
 **Arguments:**
-
-`--dataset`: Choose from "sysu", "regdb", or "llcm".
-`--gpu`: Specify the GPU ID.
+- `--dataset`: Choose from "sysu", "regdb", or "llcm".
+- `--gpu`: Specify the GPU ID.
 
 *Pre-trained weights are available on [GoogleDrive](https://drive.google.com/drive/folders/1guJetD4OFoohCVma5rUBq2TK9Yxhuv1F?usp=drive_link) and [Baidu Netdisk](https://pan.baidu.com/s/1VCFskf1Kx0rANla0l9tD1g?pwd=1234).*
 
 ## 6. Testing
 
 ### SYSU-MM01
+```bash
+python test_matrix.py --dataset 'sysu' --mode 'all' --resume 'sysu_agw_p4_n6_lr_0.1_seed_0_best.t'  --gpu 0 --workers 4
+```
 
+`--mode`: "all" (All Search) or "indoor" (Indoor Search).
 
-## bash
-python test_matrix.py --dataset 'sysu' --mode 'all' --resume 'sysu_agw_p4_n6_lr_0.1_seed_0_best.t'  --gpu 0 --workers 4
-##
-
-- `--mode`: "all" (All Search) or "indoor" (Indoor Search).
-
-```LLCM
-
+### LLCM
 *Note: Please modify the `test_mode` variable in the script or configuration before running.*
 
 **VIS to IR mode:**
 Set `test_mode = [2, 1]` in the code.
-
 ```bash
-python test_matrix.py --dataset 'llcm' --resume 'llcm_agw_p4_n6_lr_0.1_seed_0_best.t'  --gpu 0 --workers 4
+python test_matrix.py --dataset 'llcm' --resume 'llcm_agw_p4_n6_lr_0.1_seed_0_best.t'  --gpu 0 --workers 4
 ```
 
 **IR to VIS mode:**
 Set `test_mode = [1, 2]` in the code.
-
 ```bash
-python test_matrix.py --dataset 'llcm' --resume 'llcm_agw_p4_n6_lr_0.1_seed_0_best.t'  --gpu 0 --workers 4
+python test_matrix.py --dataset 'llcm' --resume 'llcm_agw_p4_n6_lr_0.1_seed_0_best.t'  --gpu 0 --workers 4
 ```
 
 ### RegDB
-
 *Note: For RegDB, modify the data loading logic in the script as follows:*
 
 **VIS to IR mode:**
-
 ```python
 test_mode = [2, 1]
 query_img, query_label = process_test_regdb(data_path, trial=test_trial, modal='visible')
 gall_img, gall_label = process_test_regdb(data_path, trial=test_trial, modal='thermal')
 ```
-
 Run:
-
 ```bash
 python test_matrix.py --dataset 'regdb' --gpu 0
 ```
 
 **IR to VIS mode:**
-
 ```python
 test_mode = [1, 2]
 query_img, query_label = process_test_regdb(data_path, trial=test_trial, modal='thermal')
 gall_img, gall_label = process_test_regdb(data_path, trial=test_trial, modal='visible')
 ```
-
 Run:
-
 ```bash
 python test_matrix.py --dataset 'regdb' --gpu 0
 ```
@@ -173,12 +152,3 @@ Most of the code is based on [DEEN](https://github.com/mangye16/Cross-Modal-Re-I
 [1] D. T. Nguyen et al. Person recognition system based on a combination of body images from visible light and thermal cameras. Sensors, 17(3):605, 2017.
 [2] A. Wu et al. RGB-infrared cross-modality person re-identification. ICCV, 2017.
 [3] Zhang Y, Wang H. Diverse Embedding Expansion Network and Low-Light Cross-Modality Benchmark for Visible-Infrared Person Re-identification. CVPR, 2023.
-
-```
-
-### 3. 操作提醒
-​
-1.  **Zenodo DOI**: 强烈建议你去弄一个（只需要用GitHub登录Zenodo，点一下Authorize，再Create Release即可）。弄好后，把生成的Markdown badge代码贴到第一行。如果暂时不弄，就把开头 `<!-- PLACEHOLDER... -->` 这一行删掉。
-2.  **代码路径确认**: 我在 "2. Model Architecture & Key Algorithms" 部分根据经验推测了你的文件结构（如 `model/sfgpn.py`）。请务必**检查并修改**成你实际的文件路径，否则审稿人会觉得描述不准确。
-3.  **提交**: 更新完 README 后，记得 push 到 GitHub。
-```
