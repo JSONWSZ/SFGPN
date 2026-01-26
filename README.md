@@ -1,7 +1,6 @@
 # Pixel-Level Foreground Perception with Soft Consistency Guidance for Visible-Infrared Person Re-Identification
 
-<!-- You need to go to Zenodo.org, link this repo, and paste the DOI badge markdown here. It looks like this: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.xxxxxx.svg)](https://doi.org/10.5281/zenodo.xxxxxx) -->
-<!-- PLACEHOLDER FOR ZENODO DOI BADGE -->
+[![DOI](https://zenodo.org/badge/1142421501.svg)](https://doi.org/10.5281/zenodo.18376063)
 
 > **Note to Readers and Reviewers:**  
 > This code is the official implementation of the manuscript submitted to **The Visual Computer**, titled **"Pixel-Level Foreground Perception with Soft Consistency Guidance for Visible-Infrared Person Re-Identification"**. The source code is permanently hosted to ensure transparency and reproducibility of the experiments presented in the paper.
