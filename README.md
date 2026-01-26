@@ -1,7 +1,3 @@
-[TOC]
-
-
-
 # Pixel-Level Foreground Perception with Soft Consistency Guidance for Visible-Infrared Person Re-Identification
 
 <!-- You need to go to Zenodo.org, link this repo, and paste the DOI badge markdown here. It looks like this: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.xxxxxx.svg)](https://doi.org/10.5281/zenodo.xxxxxx) -->
@@ -54,7 +50,7 @@ You need to download the original datasets and then perform the instance segment
     -   **Logic:** Refer to `SFGPN/PedestrianSegmentation/Segmentation.py`.
     -   **Model:** Get the YOLO11 model from [Ultralytics](https://docs.ultralytics.com/zh/tasks/segment/).
     
-    > **Note on Dirty Data:** The original datasets contain "dirty" images (background only, no pedestrians). For example, in SYSU-MM01, we set a confidence threshold of 0.1. Images below this threshold are saved to `SYSU-MM01-dirty` (e.g., subfolders like `cam1`, `cam5/0461` often contain empty backgrounds). We filter these out during preprocessing.
+    > **Note on Dirty Data:** The original datasets contain "dirty" images (background only, no pedestrians). For example, in SYSU-MM01, we set a confidence threshold of 0.1. Images below this threshold are saved to `SYSU-MM01-dirty` (e.g., subfolders like `cam1`,`cam2`, `cam5/0461` often contain empty backgrounds). We filter these out during preprocessing.
 
 3.  **Quick Start (Pre-processed Data):**
     If you prefer not to process the data manually, you can download our **processed datasets** directly from [Baidu Netdisk](https://pan.baidu.com/s/1Pw22313pqSaBGebggMH-uQ?pwd=1234).
@@ -149,6 +145,8 @@ If this work and code are helpful for your research, please cite our paper. **We
 
 Most of the code is based on [DEEN](https://github.com/mangye16/Cross-Modal-Re-ID-baseline) [3]. We thank the authors for their contributions to the community.
 
-[1] D. T. Nguyen et al. Person recognition system based on a combination of body images from visible light and thermal cameras. Sensors, 17(3):605, 2017.
+[1] D. T. Nguyen et al. Person recognition system based on a combination of body images from visible light and thermal cameras. Sensors,17(3):605,2017.
+
 [2] A. Wu et al. RGB-infrared cross-modality person re-identification. ICCV, 2017.
-[3] Zhang Y, Wang H. Diverse Embedding Expansion Network and Low-Light Cross-Modality Benchmark for Visible-Infrared Person Re-identification. CVPR, 2023.
+
+[3] Zhang Y, Wang H. Diverse Embedding Expansion Network and Low-Light Cross-Modality Benchmark for Visible-Infrared Person Re-identification.CVPR,2023.
